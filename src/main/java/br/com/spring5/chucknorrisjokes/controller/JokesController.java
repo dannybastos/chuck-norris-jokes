@@ -1,6 +1,8 @@
 package br.com.spring5.chucknorrisjokes.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -8,8 +10,10 @@ import br.com.spring5.chucknorrisjokes.service.JokesService;
 
 @Controller
 public class JokesController {
+	private static final String CHUCK_NORRIS_JOKES_VIEW = "chuck-norris-jokes";
 	private JokesService jokesService;
 	
+	@Autowired
 	public JokesController(JokesService jokesService) {
 		super();
 		this.jokesService = jokesService;
@@ -17,12 +21,17 @@ public class JokesController {
 
 
 	@GetMapping("/")
-	public ModelAndView getJokes() {
+	public String getJokes(Model model) {
 		String result = jokesService.getRandomJoke();
-		
-		ModelAndView modelAndView = new ModelAndView("chuck-norris-jokes");
-		modelAndView.addObject("joke", result);
-		return modelAndView;
+		model.addAttribute("joke", result);
+		return CHUCK_NORRIS_JOKES_VIEW;
 	}
 	
+	@GetMapping("/v2")
+	public ModelAndView getJokes1() {
+		String result = jokesService.getRandomJoke();
+		ModelAndView model = new ModelAndView(CHUCK_NORRIS_JOKES_VIEW);
+		model.addObject("joke", result);
+		return model;
+	}
 }
